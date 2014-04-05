@@ -24,15 +24,23 @@ class LineItemsController < ApplicationController
   # POST /line_items
   # POST /line_items.json
   def create
-    @line_item = LineItem.new(line_item_params)
+    #Params object holds every parameter passed through a browser request
+    #It works like a hash table
+    # I need to see if I could use product_id and then use find parameters
+    @cart = current_cart #Appearently we didn't have yeat a cart
+    product = Product.find(params[:product_id])
+    @line_item = @cart.line_items.build(product: product) #create a relationship between tables, rails do the dirty job
 
     respond_to do |format|
       if @line_item.save
-        format.html { redirect_to @line_item, notice: 'Line item was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @line_item }
+        format.html { redirect_to @line_item.cart, 
+          notice: 'Line item was successfully created.' }
+        format.json { render action: @line_item, 
+          status: :created, location: @line_item }
       else
         format.html { render action: 'new' }
-        format.json { render json: @line_item.errors, status: :unprocessable_entity }
+        format.json { render json: @line_item.errors, 
+          status: :unprocessable_entity }
       end
     end
   end
@@ -42,11 +50,13 @@ class LineItemsController < ApplicationController
   def update
     respond_to do |format|
       if @line_item.update(line_item_params)
-        format.html { redirect_to @line_item, notice: 'Line item was successfully updated.' }
+        format.html { redirect_to @line_item, 
+          notice: 'Line item was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
-        format.json { render json: @line_item.errors, status: :unprocessable_entity }
+        format.json { render json: @line_item.errors, 
+          status: :unprocessable_entity }
       end
     end
   end

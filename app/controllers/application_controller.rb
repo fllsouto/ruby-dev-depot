@@ -8,9 +8,9 @@ class ApplicationController < ActionController::Base
   	#became an action controller
   	def current_cart 
   		Cart.find(session[:cart_id]) #search in database, session works like a hash table
-  	rescue ActionRecord::RecordNotFound #This rescue is for when the cart isn't found
+  	rescue ActiveRecord::RecordNotFound #This rescue is for when the cart isn't found
   		cart = Cart.create
-  		session[:cart_id] = cart_id
+  		session[:cart_id] = cart.id
   		cart
   	end
 end

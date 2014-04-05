@@ -1,5 +1,8 @@
 class Product < ActiveRecord::Base
 
+	has_many :line_items
+	before_destroy :ensure_not_referenced_by_any_item
+
 	validates :title, :description, :image_url, presence: true
 	validates :price, numericality: { greater_than_or_equal_to: 0.01 }
 	validates :title, uniqueness: true
@@ -12,8 +15,6 @@ class Product < ActiveRecord::Base
 		message: 'must be a  URL for GIF, JPG, or PNG image.'
 	}
 
-	has_many :line_items
-	before_destroy :ensure_not_referenced_by_any_item
 
 	private
 	#This is a hook method, that rails calls when we attempt to destroy a row in the database.
@@ -22,7 +23,7 @@ class Product < ActiveRecord::Base
 		if line_items.empty?
 			return true
 		else
-			erros.add(:base 'Line items present')
+			errors.add(:base, 'Line items present')
 			return false
 		end
 	end
