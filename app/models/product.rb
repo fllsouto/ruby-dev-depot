@@ -12,4 +12,19 @@ class Product < ActiveRecord::Base
 		message: 'must be a  URL for GIF, JPG, or PNG image.'
 	}
 
+	has_many :line_items
+	before_destroy :ensure_not_referenced_by_any_item
+
+	private
+	#This is a hook method, that rails calls when we attempt to destroy a row in the database.
+	#When the hook returns false the row will not be destroyed
+	def ensure_not_referenced_by_any_item
+		if line_items.empty?
+			return true
+		else
+			erros.add(:base 'Line items present')
+			return false
+		end
+	end
+
 end
