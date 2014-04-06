@@ -28,13 +28,16 @@ class LineItemsController < ApplicationController
     #It works like a hash table
     # I need to see if I could use product_id and then use find parameters
     @cart = current_cart #Appearently we didn't have yeat a cart
+
+    #It returns the fully object to this variable
     product = Product.find(params[:product_id])
-    @line_item = @cart.line_items.build(product: product) #create a relationship between tables, rails do the dirty job
+
+    #@line_item = @cart.line_items.build(product: product) #create a relationship between tables, rails do the dirty job
+    @line_item = @cart.add_product(product.id) #I'm using a cart model method
 
     respond_to do |format|
-      if @line_item.save
-        format.html { redirect_to @line_item.cart, 
-          notice: 'Line item was successfully created.' }
+      if @line_item.save #Before this point @line_item.id is nil because It wasn't saved in database
+        format.html { redirect_to @line_item.cart }
         format.json { render action: @line_item, 
           status: :created, location: @line_item }
       else

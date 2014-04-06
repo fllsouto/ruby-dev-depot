@@ -11,7 +11,9 @@
 		<%= sanitize(product.description) %>
 		<div class="price_line" >
 			<span class="price"><%= number_to_currency(product.price) %></span>
+			<!-- TODO: understand how  'product_id: product' works -->
 			<%=	button_to 'Add to cart', line_items_path(product_id: product)	%>
+			<!-- In some way that I didn't know how, product set :product_id with his own attribute product.id ... I need to figure out how this realy works -->
 			<!-- We use button_to method to make a post action -->
 		</div>
 	</div>
